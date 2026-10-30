@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 扫描 Service 层和 Dao 层，@Service、@Repository 由此生效 -->
+    <context:component-scan base-package="com.service,com.dao"/>
+
+    <!-- 数据源：数据库名 exp_3，用户名和密码请改成自己的 -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://127.0.0.1:3306/exp_3?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Asia/Shanghai"/>
+        <!-- TODO 改成你自己的 MySQL 用户名 -->
+        <property name="username" value="root"/>
+        <!-- TODO 改成你自己的 MySQL 密码 -->
+        <property name="password" value="123456"/>
+    </bean>
+
+    <!-- JdbcTemplate，Dao 实现类通过 @Autowired 使用它访问数据库 -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>
