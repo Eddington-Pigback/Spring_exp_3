@@ -59,6 +59,13 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>8.0.33</version>
         </dependency>
+
+        <!-- JSR-380 校验实现（Spring MVC 检测到后会自动装配 Validator） -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.0.Final</version>
+        </dependency>
     </dependencies>
 
     <build>

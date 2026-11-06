@@ -2,9 +2,11 @@ package com.controller;
 
 import com.pojo.Product;
 import com.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -21,17 +23,24 @@ public class ProductController {
 
     /**
      * 打开录入商品页面（index.jsp 中的“录入商品信息”超链接）。
+     * 表单使用 Spring 的 form 标签绑定 product，因此需要先放入一个空对象。
      */
     @RequestMapping(value = "/addProduct", method = RequestMethod.GET)
-    public String addProductPage() {
+    public String addProductPage(Model model) {
+        model.addAttribute("product", new Product());
         return "addProduct";
     }
 
     /**
-     * 接收 addProduct.jsp 提交的表单，写入数据库后重定向到商品列表。
+     * 接收 addProduct.jsp 提交的表单，先做 JSR-380 校验，通过后写入数据库并重定向到商品列表。
+     * 校验不通过时把错误信息带回 addProduct.jsp 显示；BindingResult 必须紧跟在 @Valid 参数之后。
      */
     @RequestMapping(value = "/saveProduct", method = RequestMethod.POST)
-    public String saveProduct(Product product, RedirectAttributes redirectAttributes) {
+    public String saveProduct(@Valid Product product, BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "addProduct";
+        }
         boolean success = productService.addProduct(product);
         if (success) {
             redirectAttributes.addFlashAttribute("message",
